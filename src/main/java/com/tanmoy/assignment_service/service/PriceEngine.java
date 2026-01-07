@@ -33,14 +33,16 @@ public class PriceEngine {
     }
 
     public Optional<Integer> findPrice(String sku, LocalTime time) {
-
+        
         List<PriceSlot> slots = priceMap.get(sku);
         if (slots == null) return Optional.empty();
 
         return slots.stream()
-                .filter(s -> !time.isBefore(s.getStart())
-                        && !time.isAfter(s.getEnd()))
-                .map(PriceSlot::getPrice)
-                .findFirst();
+            .sorted(Comparator.comparing(PriceSlot::getStart).reversed())
+            .filter(s -> !time.isBefore(s.getStart())
+                    && !time.isAfter(s.getEnd()))
+            .map(PriceSlot::getPrice)
+            .findFirst();
     }
+
 }
