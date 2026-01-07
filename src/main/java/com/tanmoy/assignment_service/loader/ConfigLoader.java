@@ -1,5 +1,6 @@
 package com.tanmoy.assignment_service.loader;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.*;
@@ -50,11 +51,20 @@ public class ConfigLoader {
             } else {
                 currentMap.put(key, value);
             }
-
         }
     }
 
     public Map<String, Object> getSection(String section) {
         return sectionData.get(section);
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            load("src/test/resources/config.txt");
+            System.out.println("CONFIG LOADED => " + sectionData.keySet());
+        } catch (Exception e) {
+            System.err.println("Failed to load config: " + e.getMessage());
+        }
     }
 }
